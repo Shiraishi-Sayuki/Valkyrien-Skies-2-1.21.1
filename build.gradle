@@ -26,7 +26,7 @@ if (project.hasProperty("CustomReleaseVersion")) {
 } else {
     String gitRevision = "git rev-parse HEAD".execute().text.trim()
 
-    version = mod_version + "+" + gitRevision.substring(0, 10)
+    version = mod_version + "+" + "codex"
 }
 
 architectury {
@@ -109,11 +109,11 @@ subprojects {
             maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Suggestion Tweaker, Create Big Cannons
             maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
             maven { url = "https://maven.architectury.dev/" }
-            maven { url = "https://maven.createmod.net"} // https://wiki.createmod.net/developers/depend-on-create/neoforge-1.21.1
+            maven { url = "https://maven.createmod.net" } // https://wiki.createmod.net/developers/depend-on-create/neoforge-1.21.1
             maven { url = "https://mvn.devos.one/snapshots/" } // Fabric Create, Porting Lib, Forge Tags, Milk Lib
             maven { url = "https://mvn.devos.one/releases/" }
             maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API Port
-            maven { url = "https://maven.tterrag.com/" } // Registrate, Forge Create and Flywheel
+            maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate, Forge Create and Flywheel
             maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
             maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
             maven {

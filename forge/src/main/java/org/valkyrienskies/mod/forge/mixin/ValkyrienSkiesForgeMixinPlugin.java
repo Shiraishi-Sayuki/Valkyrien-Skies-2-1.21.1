@@ -30,12 +30,16 @@ public class ValkyrienSkiesForgeMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(final String s, final String mixinClassName) {
         final boolean isMixinBoosterLoaded = classExists("io.github.steelwoolmc.mixintransmog.MixinModlauncherRemapper");
+        final boolean isCreateLoaded = classExists("com.simibubi.create.Create");
 
         if (mixinClassName.contains("org.valkyrienskies.mod.forge.mixin.compat.mixinbooster")) {
             return isMixinBoosterLoaded; // Load only if mixinbooster is enabled
         }
         if (mixinClassName.equals("org.valkyrienskies.mod.forge.mixin.feature.forge_interact.MixinIForgePlayer")) {
             return !isMixinBoosterLoaded; // Load only if mixinbooster is not enabled
+        }
+        if (mixinClassName.contains("org.valkyrienskies.mod.forge.mixin.compat.create")) {
+            return isCreateLoaded; // Load Create compatibility mixins only when Create is installed
         }
 
         return true;

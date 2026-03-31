@@ -9,6 +9,9 @@ import org.valkyrienskies.core.api.ships.properties.ShipId
 import org.valkyrienskies.mod.mixinducks.feature.command.VSCommandSource
 
 class ShipArgumentParser(private val source: VSCommandSource?, private var selectorOnly: Boolean) {
+    private val shipOptions = setOf("slug", "limit", "id")
+    private val selectorType = 'v'
+
     var suggestionProvider: (SuggestionsBuilder) -> Unit = {}
     var slug: String? = null
     var limit: Int? = null
@@ -27,14 +30,18 @@ class ShipArgumentParser(private val source: VSCommandSource?, private var selec
             if (!reader.canRead()) {
                 // Suggest "v"
                 suggest { builder, _ ->
-                    builder.suggest("v")
+                    builder.suggest(selectorType.toString())
                 }
             } else {
-                reader.read()
+                val parsedSelectorType = reader.read()
+                if (parsedSelectorType != selectorType) {
+                    throw ERROR_UNKNOWN_SELECTOR_TYPE.createWithContext(reader, parsedSelectorType.toString())
+                }
 
                 if (!reader.canRead()) {
                     suggestOpenOptions()
                 } else if (reader.read() == '[') {
+                    val parsedOptions = hashSetOf<String>()
                     if (!reader.canRead()) {
                         suggestOptions()
                     } else {
@@ -54,6 +61,10 @@ class ShipArgumentParser(private val source: VSCommandSource?, private var selec
                                 // If not for suggestion then we cannot throw an exception
                                 // otherwise MC won't generate suggestions for this argument
                                 return ShipSelector(null, null, 0)
+                            }
+
+                            if (!parsedOptions.add(s)) {
+                                throw ERROR_DUPLICATE_OPTION.createWithContext(reader, s)
                             }
 
                             reader.skipWhitespace()
@@ -102,21 +113,14 @@ class ShipArgumentParser(private val source: VSCommandSource?, private var selec
         return ShipSelector(slug, id, limit ?: Int.MAX_VALUE)
     }
 
-    private fun isOption(s: String): Boolean = when (s) {
-        "slug", "limit", "id" -> true
-        else -> false
-    }
+    private fun isOption(s: String): Boolean = s in shipOptions
 
-    // TODO keep a dynamic list of options...
-    private fun suggestOptions(textSoFar: String? = null) = suggest { builder, source ->
+    private fun suggestOptions(textSoFar: String? = null) = suggest { builder, _ ->
+        val optionSuggestions = shipOptions.asSequence().map { "$it=" }
         if (textSoFar == null) {
-            builder.suggest("slug=")
-            builder.suggest("limit=")
-            builder.suggest("id=")
+            optionSuggestions.forEach(builder::suggest)
         } else {
-            if ("slug=".startsWith(textSoFar)) builder.suggest("slug=")
-            if ("limit=".startsWith(textSoFar)) builder.suggest("limit=")
-            if ("id=".startsWith(textSoFar)) builder.suggest("id=")
+            optionSuggestions.filter { it.startsWith(textSoFar) }.forEach(builder::suggest)
         }
     }
 
@@ -199,5 +203,9 @@ class ShipArgumentParser(private val source: VSCommandSource?, private var selec
             DynamicCommandExceptionType { Component.translatable("argument.ship.options.valueless", it) }
         val ERROR_UNKNOWN_OPTION =
             DynamicCommandExceptionType { Component.translatable("argument.entity.options.unknown", it) }
+        val ERROR_DUPLICATE_OPTION =
+            DynamicCommandExceptionType { Component.translatable("argument.ship.options.duplicate", it) }
+        val ERROR_UNKNOWN_SELECTOR_TYPE =
+            DynamicCommandExceptionType { Component.translatable("argument.entity.selector.unknown", it) }
     }
 }
