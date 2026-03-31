@@ -72,10 +72,9 @@ dependencies {
     modRuntimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${property("minecraft_version")}:${property("forge_flywheel_version")}")
     modImplementation("com.tterrag.registrate:Registrate:${property("forge_registrate_version")}")
 
-    // Weather2 1.20.1
-    // Not on 1.21.1 yet
-    // modImplementation("curse.maven:weather-storms-tornadoes-237746:5244118")
-    // modImplementation("curse.maven:coroutil-237749:5096038")
+    // Weather Storms & Tornadoes (Weather2)
+    modImplementation("curse.maven:weather-storms-tornadoes-237746:6926103")
+    modImplementation("curse.maven:coroutil-237749:7796187")
 
     // CC Tweaked
     modCompileOnly("maven.modrinth:cc-tweaked:${cc_tweaked_version}")
