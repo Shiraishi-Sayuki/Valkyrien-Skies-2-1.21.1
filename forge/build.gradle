@@ -67,7 +67,7 @@ dependencies {
 
     // Create Mod, see https://wiki.createmod.net/developers/depend-on-create/neoforge-1.21.1
     modImplementation("com.simibubi.create:create-${property("minecraft_version")}:${property("forge_create_version")}:slim") { transitive = false }
-    modImplementation("net.createmod.ponder:Ponder-NeoForge-${property("minecraft_version")}:${property("forge_ponder_version")}")
+    modImplementation("net.createmod.ponder:ponder-neoforge:${property("forge_ponder_version")}+mc${property("minecraft_version")}")
     modCompileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${property("minecraft_version")}:${property("forge_flywheel_version")}")
     modRuntimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${property("minecraft_version")}:${property("forge_flywheel_version")}")
     modImplementation("com.tterrag.registrate:Registrate:${property("forge_registrate_version")}")
